@@ -7,7 +7,7 @@ ARG STRIP_WINE_DEBUG=true
 
 # Pinned WineHQ staging release; updated via Renovate.
 # renovate: datasource=deb depName=winehq-staging
-ARG WINE_VERSION=11.19~trixie-1
+ARG WINE_VERSION=11.21~trixie-1
 
 # Runtime defaults: locked-down Selkies streaming over Unix socket to nginx,
 # audio enabled without mic/webcam, and default trader user (1000:1000).
