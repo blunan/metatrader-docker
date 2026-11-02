@@ -30,6 +30,12 @@ For firewalls restricting outbound egress:
 
 | Lifecycle | Endpoint | Purpose |
 |---|---|---|
+| Build | `pkg-containers.githubusercontent.com` | Base image layer downloads (GHCR blob storage) |
+| Build | `dl.winehq.org` | WineHQ archive signing key and Debian staging packages |
+| Build | `deb.debian.org` | Debian package repository (`osslsigncode`, dependencies) |
+| Build | `security.debian.org` | Debian security updates (`apt-get upgrade`) |
+| Build | `deb.nodesource.com` | NodeSource repository in upstream base image (`apt-get update`) |
+| Build | `download.mql5.com` | MetaTrader installer and binary components |
 | Initial boot | `msedge.sf.dl.delivery.mp.microsoft.com` | Microsoft Edge WebView2 installer |
 | Initial boot | `www.microsoft.com` | CRL revocation lists for Microsoft signature verification |
 | Initial boot & background | `config.edge.skype.com`, `msedge.api.cdp.microsoft.com`, `msedge.f.tlu.dl.delivery.mp.microsoft.com` | Edge Update service |

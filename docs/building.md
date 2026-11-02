@@ -12,6 +12,7 @@ tests/access.sh
 - `docker build --build-arg STRIP_WINE_DEBUG=false`: Retains Wine debug symbols for crash backtraces (adds ~1 GB).
 - `docker build --build-arg WINE_VERSION=<version>`: Installs custom WineHQ staging release (e.g. `11.20~trixie-1`).
 - `tests/access.sh`: Validates access controls, refusals, origins, TLS certificates, ports, and Authenticode verification (including spoofed signer names and Docker seccomp checks). Offline and leaves no artifacts. Add `--host` to test host networking (binds `127.0.0.1:3911`).
+- **Firewall egress:** If building behind a firewall restricting outbound egress, ensure endpoints listed under `Build` in [What the container connects to](verify.md#what-the-container-connects-to) are allowed.
 - `tests/compose.dev.yaml`: Runs a local development container on port 3201 alongside existing deployments:
 
     ```sh
