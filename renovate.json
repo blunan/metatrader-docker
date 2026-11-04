@@ -10,7 +10,8 @@
   "internalChecksFilter": "strict",
   "automerge": false,
   "platformAutomerge": false,
-  "assignees": ["blun4n-ai"],
+  "semanticCommits": "enabled",
+  "assignees": ["blun4n"],
   "ignorePaths": ["docs/requirements.in", "docs/requirements.txt"],
   "ignoreDeps": ["ghcr.io/blunan/metatrader-docker"],
   "packageRules": [
@@ -70,6 +71,11 @@
       "prBodyNotes": [
         "CI does not install Python packages; verify locally before merging: test with tests/compose.dev.yaml and MT_PYTHON=true, confirm step 4 installation in logs, and run tests/python.sh."
       ]
+    },
+    {
+      "description": "Updates to what's in the image (Dockerfile, root/) are titled fix(deps), so release-please proposes a patch release. Workflow and tool updates stay chore(deps) and release nothing.",
+      "matchFileNames": ["Dockerfile", "root/**"],
+      "semanticCommitType": "fix"
     }
   ],
   "customManagers": [
