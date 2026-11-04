@@ -12,7 +12,9 @@ exclude_docs: |
 theme:
   name: material
   font: false                                  # system fonts (no Google Fonts requests)
+  favicon: assets/favicon.svg                  # white copy of the material/chart-line icon
   icon:
+    logo: material/chart-line
     repo: fontawesome/brands/github
   palette:
     - media: "(prefers-color-scheme)"
@@ -30,6 +32,8 @@ theme:
         icon: material/brightness-4
         name: Follow the system setting
   features:
+    - navigation.sections
+    - navigation.expand
     - navigation.top
     - navigation.footer
     - content.code.copy
