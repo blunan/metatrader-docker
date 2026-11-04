@@ -11,9 +11,6 @@ data/
 secrets/
 compose.override.yaml
 
-# VS Code settings
-*.code-workspace
-
 # The guide's build output and its local Python environment (docs/building.md)
 site/
 .venv/
