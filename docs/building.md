@@ -38,9 +38,17 @@ tests/access.sh
 - Image build and `tests/access.sh --host` on pinned Docker Engine (`DOCKER_VERSION`).
 - Trivy vulnerability and secret scanning (fails on fixable HIGH/CRITICAL findings; exceptions documented in `.trivyignore.yaml`).
 
-On `main`, the workflow pushes the verified image, signs the digest with Cosign, and tags the release (see [Security and verification](verify.md)).
+On `main`, the workflow pushes the verified image, signs the digest with Cosign, and tags it `latest`, a date tag and `sha-<commit>` (see [Security and verification](verify.md)).
 
 Renovate batches dependency updates into scheduled pull requests (Actions/runners, Wine, Windows Python/packages, and minor/patch bumps). Wine and Python PRs carry the `manual-test` label for verification prior to merging because CI does not run full GUI installations. Dependencies (`MetaTrader5`, `numpy`) are pinned with SHA-256 hashes in `root/opt/mt/python-requirements.txt`.
+
+Versions come from `.github/workflows/release.yml`, which runs [release-please](https://github.com/googleapis/release-please) on every `main` push. Pull request titles follow [Conventional Commits](https://www.conventionalcommits.org/), and since `main` takes squash merges only, each title becomes the commit release-please reads:
+
+- `feat:` (new or changed behavior) proposes a minor version, and `fix:` (a fix, or an update to what's in the image) a patch. `feat!:` or a `BREAKING CHANGE:` footer proposes a major.
+- Other types (`docs:`, `ci:`, `chore:`, `refactor:`, `test:`, `build:`, `style:`) propose none, even when the image is rebuilt.
+- Renovate titles updates found in `Dockerfile` and `root/` as `fix(deps):`, and workflow updates as `chore(deps):`.
+
+release-please keeps a release pull request open with the next version and its `CHANGELOG.md` entry. Merging it tags `vX.Y.Z` and publishes the [GitHub release](https://github.com/blunan/metatrader-docker/releases). A release builds no new image: each image is published when its change merges.
 
 ## This guide
 

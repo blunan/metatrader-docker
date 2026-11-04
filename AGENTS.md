@@ -25,7 +25,8 @@ The project targets `linux/amd64` exclusively.
 ├── .github/
 │   └── workflows/
 │       ├── image.yml
-│       └── docs.yml
+│       ├── docs.yml
+│       └── release.yml
 ├── docs/
 │   ├── index.md
 │   ├── quick-start.md
@@ -49,6 +50,9 @@ The project targets `linux/amd64` exclusively.
 ├── compose.yaml
 ├── mkdocs.yml
 ├── renovate.json
+├── release-please-config.json
+├── .release-please-manifest.json
+├── CHANGELOG.md
 ├── .dockerignore
 ├── .trivyignore.yaml
 ├── README.md
@@ -391,6 +395,8 @@ It performs:
 
 The documentation workflow independently validates documentation.
 
+The release workflow, `.github/workflows/release.yml`, runs release-please on every push to `main`. It keeps a release PR open with the next version and its `CHANGELOG.md` entry; merging that PR tags `vX.Y.Z` and publishes the GitHub release. A release builds no new image. The workflow uses a GitHub App token (`RELEASE_APP_CLIENT_ID` variable, `RELEASE_APP_PRIVATE_KEY` secret), not `GITHUB_TOKEN`, because a PR opened with `GITHUB_TOKEN` runs no workflows and the required checks would never report.
+
 Preserve:
 
 - Pinned GitHub Actions references.
@@ -460,6 +466,21 @@ After implementing:
 - Do not commit generated documentation output or local build artifacts unless explicitly required.
 - Preserve existing repository conventions.
 - Keep pull requests focused and explain any intentional compatibility impact.
+
+### Versions and releases
+
+`main` takes squash merges only, so a PR's title becomes its commit on `main`, and release-please reads only that title to pick the next version. A new version means the image's contents or behavior changed:
+
+- `feat:`: new or changed behavior. Minor version.
+- `fix:`: a bug fix, or an update to what's in the image (base image, Wine, packages). Patch version.
+- `feat!:` / `fix!:`, or a `BREAKING CHANGE:` footer: major version.
+- `docs:`, `ci:`, `chore:`, `refactor:`, `test:`, `build:`, `style:`: no version. Use these when the image's contents and behavior stay the same, even if it gets rebuilt.
+
+Renovate titles updates found in `Dockerfile` and `root/` as `fix(deps):`, and all other updates as `chore(deps):` (see `renovate.json`).
+
+- Don't edit `CHANGELOG.md` or `.release-please-manifest.json` by hand; release-please updates them in its release PR (`chore(main): release X.Y.Z`), which is merged by hand when the version should go out.
+- To correct a merged PR's type before its release, add the corrected message to that PR's description between a `BEGIN_COMMIT_OVERRIDE` line and an `END_COMMIT_OVERRIDE` line; release-please reads it instead of the commit. To force a version, end that message with a `Release-As: X.Y.Z` footer.
+- Don't start a paragraph in a commit body with `feat:`, `fix:` or another type: release-please reads it as another commit.
 
 ## Definition of Done
 
