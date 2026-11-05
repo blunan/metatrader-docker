@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # metatrader-docker: MetaTrader in the browser, on linuxserver's Selkies desktop.
-FROM ghcr.io/linuxserver/baseimage-selkies:debiantrixie@sha256:7fa5ffec83a1dbe5397d5751b9e072f8abe5c74b5e2f1f6d2442ab08fcd76970
+FROM ghcr.io/linuxserver/baseimage-selkies:debiantrixie@sha256:ad553118607145044871350c7d8b1d522a7dfec3896e3089749f53f95d871737
 
 # Strip Wine debug symbols to save ~1 GB. Set false for crash backtraces.
 ARG STRIP_WINE_DEBUG=true
