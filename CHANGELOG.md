@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/blunan/metatrader-docker/compare/v1.1.2...v1.1.3) (2026-11-05)
+
+
+### Bug Fixes
+
+* **deps:** update ghcr.io/linuxserver/baseimage-selkies:debiantrixie docker digest to ad55311 ([#30](https://github.com/blunan/metatrader-docker/issues/30)) ([05b1dbe](https://github.com/blunan/metatrader-docker/commit/05b1dbe52db3133d886f6f3fc5b20d3eb35bdb76))
+
 ## [1.1.2](https://github.com/blunan/metatrader-docker/compare/v1.1.1...v1.1.2) (2026-11-02)
 
 Updates WineHQ staging from 11.19 to 11.21 ([#26](https://github.com/blunan/metatrader-docker/pull/26)). Its image is listed in the [v1.1.2 release](https://github.com/blunan/metatrader-docker/releases/tag/v1.1.2).
