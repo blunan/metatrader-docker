@@ -461,11 +461,11 @@ After implementing:
 ## Git Conventions
 
 - Always use Conventional Commits spec.
-- Keep changes logically grouped.
-- Avoid committing credentials, secrets, certificates, or local account data.
-- Do not commit generated documentation output or local build artifacts unless explicitly required.
-- Preserve existing repository conventions.
-- Keep pull requests focused and explain any intentional compatibility impact.
+- Always keep changes logically grouped.
+- Never commit credentials, secrets, certificates, or local account data.
+- Never commit generated documentation output or local build artifacts unless explicitly required.
+- Always preserve existing repository conventions.
+- Keep pull requests focused and document any intentional compatibility changes.
 
 ### Versions and releases
 
@@ -500,8 +500,8 @@ A change is complete when:
 ## Security and Guardrails
 
 - Never commit secrets, credentials, tokens, or private keys.
-- Validate untrusted input at appropriate boundaries.
-- Use parameterized queries and safe APIs for external input.
+- Always validate untrusted input at appropriate boundaries.
+- Always use parameterized queries and safe APIs for external input.
 - Avoid logging sensitive information.
-- Follow least-privilege principles.
-- Do not disable security controls to bypass errors.
+- Always follow least-privilege principles.
+- Never disable security controls to bypass errors.
