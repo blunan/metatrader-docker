@@ -69,7 +69,7 @@ Always inspect the actual repository before assuming a file exists. Preserve exi
 4. Prefer native Bash, Python standard-library functionality, and existing system utilities.
 5. Keep the Docker image reproducible and minimize unnecessary image layers.
 6. Never introduce proprietary MetaTrader or Microsoft binaries into the base image.
-7. Keep documentation consistent with actual implementation.
+7. Keep documentation consistent with actual implementation, concise, and easy to read.
 8. Do not silently change existing environment variable defaults or behavior.
 9. Avoid unrelated modifications.
 10. Never claim tests passed unless they were actually executed.
@@ -377,6 +377,19 @@ Keep README quick-start instructions synchronized with `compose.yaml`.
 
 Never document insecure configurations as recommended defaults.
 
+## Documentation and Commenting Standards
+
+Maintain concise, high-signal documentation and code comments across the repository.
+
+### Principles
+
+- **Clear and easy to read:** Use straightforward language, active voice, and direct explanations.
+- **Avoid wordiness and over-explaining:** Get directly to the point. Do not pad explanations with conversational filler, narrative detours, or redundant restatements.
+- **Never lose meaning or correctness:** Brevity must never compromise technical accuracy, security nuances, edge cases, or exact commands.
+- **Code comments:** Explain the *what* and technical *why* (non-obvious constraints, workarounds, security invariants, protocol behaviors). Never narrate self-explanatory code or rephrase variable/function names.
+- **User-facing docs (`docs/`, `README.md`):** Prioritize scannability, clear headings, exact commands, structured bullet points, and concise troubleshooting guidance.
+- **Preserve test contracts:** Never alter logged strings or test outputs that regression tests assert against when editing messages or comments.
+
 ## CI/CD
 
 The primary image workflow is:
@@ -492,6 +505,7 @@ A change is complete when:
 - Relevant tests pass.
 - Shell scripts pass ShellCheck.
 - Documentation is updated when necessary.
+- Comments and documentation are concise, clear, easy to read, and free of unnecessary wordiness.
 - No credentials or sensitive artifacts are introduced.
 - The final diff contains only intentional changes.
 

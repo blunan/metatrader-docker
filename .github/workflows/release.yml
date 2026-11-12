@@ -1,6 +1,5 @@
-# Keeps a release PR open with the next version and its CHANGELOG.md entry, worked out from the PR
-# titles merged to main (feat: minor, fix: patch, other types: no release). Merging that PR tags
-# vX.Y.Z and publishes the GitHub release; it doesn't build a new image.
+# Tracks merged PR titles on main to maintain a release PR with version bumps and CHANGELOG.md.
+# Merging the release PR tags vX.Y.Z and creates a GitHub release without building a new image.
 name: release
 
 on:
@@ -21,16 +20,15 @@ jobs:
     name: Release PR
     runs-on: ubuntu-26.04
     steps:
-      # A PR opened with GITHUB_TOKEN runs no workflows, so the required checks (Image tests,
-      # Docs build) would never report and the release PR could never merge. An App token can.
+      # App token triggers workflows on release PRs (GITHUB_TOKEN blocks CI check runs).
       - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         id: app
         with:
           client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-          permission-contents: write           # the release PR's branch, the tag and the release
-          permission-pull-requests: write      # the release PR
-          permission-issues: write             # its "autorelease:" labels
+          permission-contents: write           # release PR branch, tag, and GitHub release
+          permission-pull-requests: write      # release PR management
+          permission-issues: write             # autorelease labels
 
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
