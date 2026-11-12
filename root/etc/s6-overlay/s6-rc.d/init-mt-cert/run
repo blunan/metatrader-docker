@@ -1,9 +1,9 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
-# init-mt-cert: Generates or renews the default self-signed TLS certificate
+# init-mt-cert: Generates or renews default self-signed TLS certificate
 # (/config/ssl/cert.{pem,key}) for localhost/127.0.0.1/::1 (825-day validity,
-# renewed when <=30 days remain). Custom mounted certificates are preserved;
-# default Linuxserver.io certificates are replaced.
+# renewed within 30 days of expiry). Preserves custom certificates; replaces
+# default LinuxServer.io certificates.
 set -euo pipefail
 
 dir=/config/ssl

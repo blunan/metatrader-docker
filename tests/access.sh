@@ -149,8 +149,7 @@ refusals_checked() {
   refusals=()
 }
 
-# code [--from <probe>] <curl options and URL...>: the HTTP status, 000 when
-# nothing answers.
+# code [--from <probe>] <curl options and URL...>: returns HTTP status code (000 if unreachable).
 code() {
   local from=probe
   if [[ "$1" == --from ]]; then
@@ -160,7 +159,7 @@ code() {
   docker exec "$run-$from" curl -sk --http1.1 -o /dev/null -w '%{http_code}' --max-time 5 "$@" || true
 }
 
-# ws <host:port> <path> <origin>: the status of a stream handshake.
+# ws <host:port> <path> <origin>: returns WebSocket handshake HTTP status code.
 ws() {
   code -u "$user:$password" --max-time 3 \
     -H 'Connection: Upgrade' -H 'Upgrade: websocket' \
@@ -168,8 +167,8 @@ ws() {
     -H "Origin: $3" "https://$1$2"
 }
 
-# security_headers <curl options and URL...>: succeeds when all four are there.
-# Only the desktop's own page may frame it (its file panel is a frame).
+# security_headers <curl options and URL...>: asserts presence of all four security headers.
+# Framing is restricted to self (required by embedded file panel).
 security_headers() {
   local headers
   headers="$(docker exec "$run-probe" curl -sk -D - -o /dev/null --max-time 5 "$@" | tr -d '\r')"
@@ -179,17 +178,15 @@ security_headers() {
     grep -qx 'Referrer-Policy: no-referrer' <<< "$headers"
 }
 
-# logged <name> <text>: succeeds when the container's log has the text. The
-# log is read in full first: under pipefail, "docker logs | grep -q" can fail
-# when grep stops early and docker logs gets SIGPIPE.
+# logged <name> <text>: checks container logs for expected text.
+# Reads full log before grepping to prevent SIGPIPE under pipefail.
 logged() {
   local logs
   logs="$(docker logs "$run-$1" 2>&1)"
   grep -qF -- "$2" <<< "$logs"
 }
 
-# until_logged <name> <text>: waits up to 120 s for the text in the container's
-# log; succeeds if it came.
+# until_logged <name> <text>: waits up to 120s for text to appear in container log.
 until_logged() {
   local _
   for _ in $(seq 1 120); do
@@ -199,15 +196,13 @@ until_logged() {
   return 1
 }
 
-# dump_log <name>: run-terminal.sh's log, with Wine's own errors, which docker
-# logs mixes with the other services' lines.
+# dump_log <name>: prints run-terminal.log for troubleshooting test failures.
 dump_log() {
   echo "  run-terminal.log:"
   docker exec "$run-$1" cat /config/log/mt/run-terminal.log 2>&1 | sed 's/^/    /' || true
 }
 
-# listeners <name>: the container's listening TCP and UDP sockets, as
-# hexadecimal address:port, without Docker's DNS server on 127.0.0.11.
+# listeners <name>: returns listening TCP/UDP sockets (hex IP:port), excluding Docker DNS (127.0.0.11).
 listeners() {
   docker exec "$run-$1" sh -c '
     for f in tcp tcp6; do awk "NR > 1 && \$4 == \"0A\" { print \$2 }" /proc/net/$f; done
@@ -219,13 +214,12 @@ ip_of() {
   docker inspect -f "{{(index .NetworkSettings.Networks \"$net\").IPAddress}}" "$run-$1"
 }
 
-# cert_field <name> <openssl x509 options...>: one field of the container's own
-# certificate, the value only.
+# cert_field <name> <openssl options...>: extracts single certificate field value.
 cert_field() {
   docker exec "$run-$1" openssl x509 -in /config/ssl/cert.pem -noout "${@:2}" | tail -n 1 | sed 's/^ *//'
 }
 
-# cert_days <name>: how many days the container's own certificate is valid.
+# cert_days <name>: returns certificate validity period in days.
 cert_days() {
   docker exec "$run-$1" sh -c '
     s=$(date -d "$(openssl x509 -in /config/ssl/cert.pem -noout -startdate | cut -d= -f2)" +%s)
@@ -233,30 +227,23 @@ cert_days() {
     echo $(((e - s) / 86400))'
 }
 
-# selkies_env <name> <regex>: the variables in Selkies' environment that match,
-# sorted, on one line.
+# selkies_env <name> <regex>: returns matching Selkies process environment variables, sorted.
 selkies_env() {
   local pid
   pid="$(docker exec "$run-$1" pgrep -o -f 'selkies --addr')"
   docker exec -u abc "$run-$1" sh -c "tr '\0' '\n' < /proc/$pid/environ | grep -E '$2' | sort | paste -s -d ' '"
 }
 
-# trusted <URL> <curl options...>: the HTTP status with the probe trusting
-# only /tmp/main.pem, the main container's own certificate. 000 when the
-# certificate isn't accepted for that name.
+# trusted <URL> <curl options...>: queries URL using container certificate (/tmp/main.pem) as CA.
 trusted() {
   docker exec "$run-probe" curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
     --cacert /tmp/main.pem "${@:2}" "$1" || true
 }
 
-# notice_window <name>: the window the desktop shows while MetaTrader can't
-# start (notice.py), as "<how many> framed|unframed small|full
-# centred|off centre by <x>,<y>". Small means its frame, title bar included, is
-# smaller than the screen: openbox marks every window maximized, as it does
-# MetaTrader's dialogs, but a fixed size keeps them small. Centred means the
-# frame, to 2 px. Asked again for up to 10 s until it's "1 framed small
-# centred": after a failed step, the window closes and opens again every 60 s.
-# Its position comes from xwininfo: xdotool's counts the frame's offset twice.
+# notice_window <name>: inspects notice.py window geometry and state.
+# Returns "<count> framed|unframed small|full centred|off centre by <x>,<y>".
+# Polls up to 10s for "1 framed small centred" (small: <screen geometry; centred: within 2px).
+# Uses xwininfo to avoid double-counting frame offsets.
 notice_window() {
   local window _
   for _ in $(seq 1 10); do
@@ -327,7 +314,7 @@ refused "T10: SELKIES_CLIPBOARD_ENABLED=off" "SELKIES_CLIPBOARD_ENABLED must be"
 refusals_checked
 
 echo "The installers' signature check"
-# Offline, a file with no signature is refused before any download.
+# An unsigned file must be refused before any network download.
 rc=0
 out="$(docker exec "$run-probe" /opt/mt/verify-signature.sh python /etc/hostname 2>&1)" || rc=$?
 check "Signature check: an unsigned file is refused as Python's installer" 1 "$rc"
@@ -336,11 +323,9 @@ check_true "Signature check: ...because it isn't signed through Microsoft's ID V
 rc=0
 docker exec "$run-probe" /opt/mt/verify-signature.sh pip /etc/hostname > /dev/null 2>&1 || rc=$?
 check "Signature check: an unknown kind is a usage error" 2 "$rc"
-# The organisation comes from the signer's certificate, not from text in another
-# field of its name. In a container of its own, a test CA joins Debian's CA
-# bundle and signs a Wine program twice: as MetaQuotes Ltd, and as Spoof Ltd
-# with "Spoof/O=MetaQuotes Ltd" as its common name. Neither certificate names a
-# revocation list, so this works offline.
+# Signer organisation is validated from certificate Subject organizationName, not CN text.
+# A test CA signs a binary as MetaQuotes Ltd and as Spoof Ltd (with CN containing MetaQuotes).
+# Works offline as test certificates omit CRL distribution points.
 out="$(docker run --rm --network none --memory 256m --cap-drop ALL --security-opt no-new-privileges:true \
   --entrypoint bash "$image" -c '
     set -euo pipefail
@@ -398,7 +383,7 @@ if ready main; then
     for n in xterm st stterm uxterm lxterminal gnome-terminal konsole xfce4-terminal terminator foot weston-terminal; do
       p=$(command -v "$n" 2> /dev/null) && [ -x "$p" ] && echo "$n"
     done; true')"
-  # By the programs the menu runs: MetaTrader's own terminal64.exe isn't a terminal.
+  # Verify openbox menu contains no terminal emulators (MetaTrader terminal64.exe is not a shell).
   check "T13: terminals in the menu" 0 \
     "$(docker exec "$run-main" sh -c 'sed -n "s|.*<command>\([^ <]*\).*|\1|p" /config/.config/openbox/menu.xml |
       xargs -r -n 1 basename |
@@ -467,7 +452,7 @@ if ready main; then
   else
     pass "Q5: health checks aren't logged"
   fi
-  # Offline, the first start fails at step 2, and the window says why.
+  # Without internet access, initial setup fails at step 2 and displays retry window.
   until_logged main "Retrying in 60 s" || true
   failures_before=$failures
   check_true "MT_PYTHON unset: three install steps" logged main "step 2 of 3: Microsoft Edge WebView2"
@@ -479,8 +464,7 @@ if ready main; then
   fi
   check "T21: the startup window: one, framed like MetaTrader's windows, not filling the screen, centred" \
     "1 framed small centred" "$(notice_window main)"
-  # The size changes the way the desktop sets it, as when a browser connects.
-  # The restart below brings the old size back.
+  # Simulate resolution change on client connect (reverts on container restart).
   docker exec "$run-main" sh -c '
     mode="$(cvt 1600 900 | sed -n "s/^Modeline //p" | tr -d "\"")"
     name="${mode%% *}"
@@ -488,9 +472,7 @@ if ready main; then
     > /dev/null 2>&1 || true
   check "T21: the screen changes size" "1600 900" "$(docker exec "$run-main" xdotool getdisplaygeometry)"
   check "T21: the window is centred again" "1 framed small centred" "$(notice_window main)"
-  # After a later Python failure, the window stays above MetaTrader's: notice.py
-  # on its own, as run-terminal.sh leaves it at the hand-off. The retry window
-  # open next to it doesn't stay above.
+  # Verify Python warning window keeps ABOVE hint, while standard retry notices do not.
   docker exec -d -u abc "$run-main" sh -c \
     'printf "warning\tThe Python download failed.\n" | timeout 30 /usr/bin/python3 -I /opt/mt/notice.py'
   above=0
@@ -502,7 +484,7 @@ if ready main; then
     sleep 1
   done
   check "MT_PYTHON: Python's warning window stays above the others, and only it" 1 "$above"
-  # The certificate the base makes, as its init-nginx makes it.
+  # Simulate default Linuxserver.io certificate to verify replacement.
   docker exec -u abc "$run-main" openssl req -new -x509 -days 3650 -nodes \
     -out /config/ssl/cert.pem -keyout /config/ssl/cert.key \
     -subj "/C=US/ST=CA/L=Carlsbad/O=Linuxserver.io/OU=LSIO Server/CN=*" > /dev/null 2>&1
@@ -564,7 +546,7 @@ fi
 docker rm -f "$run-files" > /dev/null
 
 echo "Uploads with the EA folder mounted (T18)"
-# Open to all, because the user running this script may not be 1000.
+# Mode 0777 allows container user (UID 1000) access regardless of host UID.
 mkdir -m 0777 "$tmp/mql5"
 start "$net" files-ro "${with_password[@]}" -e SELKIES_FILE_TRANSFERS=true -v "$tmp/mql5:/mql5:ro"
 if ready files-ro; then
@@ -584,7 +566,7 @@ if ready files-ea; then
       --data-binary @/etc/hostname "https://$t/api/upload")"
   check "T18: the upload is in the EA folder on the host" yes \
     "$([[ -f "$tmp/mql5/Experts/access-test.txt" ]] && echo yes || echo no)"
-  # The desktop's user owns what it made there, so root removes it.
+  # Clean up test files created by desktop user.
   docker exec "$run-files-ea" find /mql5 -mindepth 1 -delete
 fi
 docker rm -f "$run-files-ea" > /dev/null
@@ -603,10 +585,7 @@ if ready plain; then
 fi
 docker rm -f "$run-plain" > /dev/null
 
-# tls <name> [openssl s_client options]: what s_client prints. It prints "New,
-# <protocol>, Cipher is <cipher>" for a handshake that worked, and "New, (NONE),
-# Cipher is (NONE)" for one that didn't. Its session summary names the attempted
-# protocol either way.
+# tls <name> [openssl s_client options]: returns s_client output for handshake and cipher inspection.
 tls() {
   docker exec "$run-probe" sh -c "echo | openssl s_client -connect $run-$1:3001 ${2:-} 2>&1" || true
 }
@@ -641,15 +620,14 @@ echo "A certificate of your own copied into /config/ssl, and an empty one (T20)"
 start "$net" tls-copy "${with_password[@]}" \
   -v "$tmp/tls.crt:/run/secrets/tls.crt:ro" -v "$tmp/tls.key:/run/secrets/tls.key:ro"
 if ready tls-copy; then
-  # The key file belongs to whoever runs this script, so root copies it, and
-  # hands it to the desktop's user.
+  # Copy certificate into /config/ssl and set abc:abc ownership.
   docker exec "$run-tls-copy" sh -c 'cp /run/secrets/tls.crt /config/ssl/cert.pem && cp /run/secrets/tls.key /config/ssl/cert.key && chown abc:abc /config/ssl/cert.pem /config/ssl/cert.key'
   own="$(docker exec "$run-tls-copy" sha256sum /config/ssl/cert.pem)"
   docker restart "$run-tls-copy" > /dev/null
   if ready tls-copy; then
     check "T20: a certificate of your own in /config/ssl is left alone" "$own" \
       "$(docker exec "$run-tls-copy" sha256sum /config/ssl/cert.pem)"
-    # What a removed mount leaves behind.
+    # Simulate empty certificate files left after unmounting.
     docker exec "$run-tls-copy" sh -c ': > /config/ssl/cert.pem && : > /config/ssl/cert.key'
     docker restart "$run-tls-copy" > /dev/null
     if ready tls-copy; then

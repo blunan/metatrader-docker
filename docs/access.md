@@ -133,7 +133,7 @@ A reverse proxy provides custom domain routing, public TLS certificates, and cen
 
 ## Your own certificate
 
-The container serves `/config/ssl/cert.pem` and `cert.key`. If missing, it generates a self-signed certificate valid for `localhost`, `127.0.0.1`, and `::1` (825-day validity, renewed when <=30 days remain).
+The container serves `/config/ssl/cert.pem` and `cert.key`. If missing, it generates a self-signed certificate valid for `localhost`, `127.0.0.1`, and `::1` (825-day validity, renewed within 30 days of expiry).
 
 Custom certificates are only required if browsers connect directly under another hostname (e.g. VPN IP with `tailscale cert`). Mount PEM-encoded certificate and private key files:
 

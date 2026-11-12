@@ -56,7 +56,7 @@ progressbar progress {
 }
 """
 
-# Wide enough for each step, and most reasons, on one line.
+# Width accommodates multi-step install status messages without wrapping.
 TEXT_WIDTH = 420
 
 
@@ -139,7 +139,7 @@ class Notice(Gtk.Window):
         label = Gtk.Label()
         label.set_xalign(0)
         label.set_line_wrap(True)
-        # Never wider than the column, which then decides where lines break.
+        # Wrap within parent column boundary.
         label.set_max_width_chars(1)
         if style:
             label.get_style_context().add_class(style)

@@ -29,7 +29,7 @@ From mildest to most disruptive:
     - Date tags (e.g. `20261019.1`): Pinned daily releases formatted for container update tools (e.g. WUD). Subsequent builds on the same date append `.2`, etc.
     - Commit tags (`sha-<commit>`): Specific git commit builds.
 - **Rollbacks:** Pin the previous date tag instead of `latest`.
-- **Versions:** [Releases](https://github.com/blunan/metatrader-docker/releases) list what changed in each version (e.g. `v1.1.0` added opt-in Python). Versions aren't image tags: pull `latest` or a date tag.
+- **Versions:** [Releases](https://github.com/blunan/metatrader-docker/releases) list what changed in each version (e.g. `v1.1.0` added opt-in Python). Release versions are GitHub release tags, not container image tags: pull `latest` or a date tag.
 - **Python environments (`MT_PYTHON=true`):** Updated images automatically upgrade Python and pinned wheels in `/config` on boot. Rolling back restores previous pinned wheels while preserving newer Python binaries.
 
 To update:

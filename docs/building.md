@@ -45,7 +45,7 @@ Renovate batches dependency updates into scheduled pull requests (Actions/runner
 Versions come from `.github/workflows/release.yml`, which runs [release-please](https://github.com/googleapis/release-please) on every `main` push. Pull request titles follow [Conventional Commits](https://www.conventionalcommits.org/), and since `main` takes squash merges only, each title becomes the commit release-please reads:
 
 - `feat:` (new or changed behavior) proposes a minor version, and `fix:` (a fix, or an update to what's in the image) a patch. `feat!:` or a `BREAKING CHANGE:` footer proposes a major.
-- Other types (`docs:`, `ci:`, `chore:`, `refactor:`, `test:`, `build:`, `style:`) propose none, even when the image is rebuilt.
+- Other types (`docs:`, `ci:`, `chore:`, `refactor:`, `test:`, `build:`, `style:`) propose no release, even when the image is rebuilt.
 - Renovate titles updates found in `Dockerfile` and `root/` as `fix(deps):`, and workflow updates as `chore(deps):`.
 
 release-please keeps a release pull request open with the next version and its `CHANGELOG.md` entry. Merging it tags `vX.Y.Z` and publishes the [GitHub release](https://github.com/blunan/metatrader-docker/releases). A release builds no new image: each image is published when its change merges.
