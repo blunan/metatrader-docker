@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/blunan/metatrader-docker/compare/v1.1.5...v1.1.6) (2026-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update ghcr.io/linuxserver/baseimage-selkies:debiantrixie docker digest to 8ec2ec5 ([#41](https://github.com/blunan/metatrader-docker/issues/41)) ([8fd6e19](https://github.com/blunan/metatrader-docker/commit/8fd6e193dec9ee01789ed06fa7f633fd8c0f148e))
+
 ## [1.1.5](https://github.com/blunan/metatrader-docker/compare/v1.1.4...v1.1.5) (2026-11-14)
 
 
