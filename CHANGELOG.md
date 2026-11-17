@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.7](https://github.com/blunan/metatrader-docker/compare/v1.1.6...v1.1.7) (2026-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency winehq-staging to v11.22~trixie-1 ([#40](https://github.com/blunan/metatrader-docker/issues/40)) ([74a07e4](https://github.com/blunan/metatrader-docker/commit/74a07e4943b8d8154fe6b9539c7e2c294948183f))
+
 ## [1.1.6](https://github.com/blunan/metatrader-docker/compare/v1.1.5...v1.1.6) (2026-11-17)
 
 
