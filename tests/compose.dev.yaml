@@ -17,7 +17,6 @@ services:
       - ./dev/ea:/mql5
     ports: !override
       - "127.0.0.1:3201:3001"
-
 secrets:
   password:
     file: ./dev/secrets/dev_password

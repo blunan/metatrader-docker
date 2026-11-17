@@ -19,7 +19,6 @@ services:
       - ./ea:/mql5                             # optional: custom EAs, indicators and scripts
     ports:
       - "127.0.0.1:3001:3001"                  # localhost only: reach via SSH tunnel or reverse proxy
-
 secrets:
   password:
     file: ./secrets/password
