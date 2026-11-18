@@ -357,7 +357,9 @@ For changes involving actual MetaTrader execution, Wine, desktop initialization,
 
 Do not treat a successful Docker build as proof that MetaTrader works correctly.
 
-## Documentation Requirements
+## Documentation
+
+### Requirements
 
 Documentation is maintained using Material for MkDocs.
 
@@ -377,11 +379,9 @@ Keep README quick-start instructions synchronized with `compose.yaml`.
 
 Never document insecure configurations as recommended defaults.
 
-## Documentation and Commenting Standards
+### Commenting Standards
 
 Maintain concise, high-signal documentation and code comments across the repository.
-
-### Principles
 
 - **Clear and easy to read:** Use straightforward language, active voice, and direct explanations.
 - **Avoid wordiness and over-explaining:** Get directly to the point. Do not pad explanations with conversational filler, narrative detours, or redundant restatements.
@@ -389,6 +389,21 @@ Maintain concise, high-signal documentation and code comments across the reposit
 - **Code comments:** Explain the *what* and technical *why* (non-obvious constraints, workarounds, security invariants, protocol behaviors). Never narrate self-explanatory code or rephrase variable/function names.
 - **User-facing docs (`docs/`, `README.md`):** Prioritize scannability, clear headings, exact commands, structured bullet points, and concise troubleshooting guidance.
 - **Preserve test contracts:** Never alter logged strings or test outputs that regression tests assert against when editing messages or comments.
+
+### Docs formatting
+
+Follow these rules on every edit under `docs/`, including files embedded with `--8<--`. They keep pages inside the brand fonts' character set and consistent with the other blunan.com docs sites. Nothing enforces them: apply them by hand.
+
+- **Characters:** Latin letters, digits, common punctuation, typographic quotes and dashes only. No box drawing (`├──`), arrows (`→`, `►`) or symbols (`⋮`, `✔`): the brand fonts lack them, so they render in a fallback font and break code-block alignment.
+- **Diagrams:** ASCII in a `text` fence. Trees use `|--`, `` `-- `` and `|`; flows use `->`.
+- **Menu paths:** write **Settings** > **Devices & services**. Name icons in words ("the three-dots menu").
+- **Program output:** keep it ASCII, or paraphrase it.
+- **Code fences:** always name the language, using one name per language: `sh`, `js`, `yaml`, `python`, `json`, and `text` for output and diagrams. Never `bash`, `shell`, `javascript`, `yml`, `txt` or `py`.
+- **Callouts:** only `note`, `abstract`, `info`, `tip`, `success`, `question`, `warning`, `failure`, `danger`, `bug`, `example` and `quote`.
+- **Emphasis:** bold or italic, never both at once.
+- **Headings:** sentence case. Capitalize only the first word, proper nouns and acronyms. Proper nouns here: MetaTrader, MetaEditor, MetaQuotes, MQL5, Strategy Tester, Expert Advisor, Wine, WineHQ, Selkies, Docker, Docker Compose, Debian, Python, Edge WebView2, Tailscale Serve, Caddy, nginx, Traefik, cloudflared, Cosign, Trivy, Renovate, release-please, GitHub.
+- **Page outline:** each page has one `#` title that equals its nav label (the home page uses the project name), a summary paragraph before the first `##`, and heading levels that never skip.
+- **Voice:** plain second person ("you"), steps as commands, present tense; contractions are fine. No filler words (please, simply, just, easy, easily) and no wordplay.
 
 ## CI/CD
 

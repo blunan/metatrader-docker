@@ -1,5 +1,7 @@
 # Security and verification
 
+Verify the image you run, inspect its SBOM and build provenance, and see every endpoint the container contacts.
+
 ## Pin a digest and check its signature
 
 Every published image is cryptographically signed keyless with Cosign via GitHub Actions. Only builds passing all automated tests and vulnerability scans are signed and tagged.

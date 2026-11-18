@@ -108,7 +108,7 @@ For remote access options (VPN, Tailscale, or reverse proxies), see [Access and 
 
 1. Log in to your trading account with *Save password* checked.
 2. If *Welcome to LiveUpdate* indicates updates were downloaded, click *Restart*.
-3. Under **Tools → Options → Experts**:
+3. Under **Tools** > **Options** > **Experts**:
     - **Allow algorithmic trading:** on.
     - **Disable algorithmic trading when the account has been changed:** on.
     - **Disable algorithmic trading when the profile has been changed:** on.
@@ -116,6 +116,6 @@ For remote access options (VPN, Tailscale, or reverse proxies), see [Access and 
     - **Disable algorithmic trading via external Python API:** on, unless using `MT_PYTHON=true` for Python trading scripts (see [Python](using.md#python)).
     - **Allow DLL imports:** off, unless explicitly required by an EA.
     - **Allow WebRequest for listed URL:** off, unless explicitly required by an EA.
-4. To reduce memory and network usage: **Charts → Max bars in chart:** 50000, and **Server → Enable news:** off.
+4. To reduce memory and network usage, set **Charts** > **Max bars in chart** to 50000 and turn off **Server** > **Enable news** in the same dialog.
 
 Next: [Using MetaTrader](using.md) in the browser.

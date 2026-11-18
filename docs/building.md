@@ -1,5 +1,7 @@
 # Build it yourself
 
+Build and test the image locally, see what CI checks and how releases work, and preview this guide.
+
 ## Local build and tests
 
 ```sh

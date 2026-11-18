@@ -54,7 +54,7 @@ See [Access and reverse proxy](access.md) for network integration patterns.
 ## Settings that go together
 
 - `PUID` and `PGID`: configure together to match host user permissions.
-- `TRUSTED_PROXIES`: requires placing proxy and container on a shared Docker network. Direct access via published `ports` will receive 403.
+- `TRUSTED_PROXIES`: requires placing proxy and container on a shared Docker network. Direct access via published `ports` receives 403.
 - `SELKIES_ALLOWED_ORIGINS`: required only if your reverse proxy overrides the incoming `Host` header.
 - `SUBFOLDER`: requires a proxy configuration that forwards the subpath intact.
 - `LISTEN_ADDRESS` and `CUSTOM_HTTPS_PORT`: used with host networking. On bridge networks, remap host ports in `ports` instead (e.g. `127.0.0.1:3101:3001`).
@@ -70,7 +70,7 @@ Troubleshooting environment variables:
 
 ## Other settings
 
-Unfiltered environment variables (e.g. `SELKIES_ENCODER`, `LC_ALL`) pass through directly to Selkies and the base image. Overriding security variables (e.g. `SELKIES_MICROPHONE_ENABLED=true`) will re-enable disabled features.
+Unfiltered environment variables (e.g. `SELKIES_ENCODER`, `LC_ALL`) pass through directly to Selkies and the base image. Overriding security variables (e.g. `SELKIES_MICROPHONE_ENABLED=true`) re-enables disabled features.
 
 The following base settings have no effect due to customized web server routing: `CUSTOM_PORT`, `CUSTOM_WS_PORT`, `DISABLE_IPV6`.
 
