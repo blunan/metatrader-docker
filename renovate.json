@@ -1,11 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Renovate configuration for base image digests, Wine, Windows Python, workflow actions, and tooling. Groups updates on Monday mornings and assigns manual-test labels to Wine and Python PRs.",
+  "description": "Renovate configuration for base image digests, Wine, Windows Python, workflow actions, and tooling. Groups updates on the first Thursday of the month and assigns manual-test labels to Wine and Python PRs.",
   "extends": [
     "config:recommended",
     ":configMigration"
   ],
   "timezone": "America/Mexico_City",
+  "schedule": ["* 0-5 1-7 * 4"],
   "minimumReleaseAge": "14 days",
   "internalChecksFilter": "strict",
   "automerge": false,
@@ -22,29 +23,26 @@
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
-      "description": "Batches minor and patch updates into a single Monday PR tested by CI.",
+      "description": "Batches minor and patch updates into a single monthly PR tested by CI.",
       "matchManagers": ["!github-actions", "!pip_requirements"],
       "matchDepNames": ["!winehq-staging", "!python/cpython"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Minor and Patch Updates",
-      "addLabels": ["minor-patch"],
-      "schedule": ["* 0-5 * * 1"]
+      "addLabels": ["minor-patch"]
     },
     {
-      "description": "Groups GitHub Actions workflow pins, runners, and action updates on Monday mornings.",
+      "description": "Groups GitHub Actions workflow pins, runners, and action updates.",
       "matchManagers": ["github-actions"],
       "pinDigests": true,
       "groupName": "GitHub Actions",
-      "addLabels": ["github-actions"],
-      "schedule": ["* 0-5 * * 1"]
+      "addLabels": ["github-actions"]
     },
     {
-      "description": "WineHQ Debian trixie staging updates. Triggers Monday PRs with manual-test labels.",
+      "description": "WineHQ Debian trixie staging updates with manual-test labels.",
       "matchDepNames": ["winehq-staging"],
       "registryUrls": ["https://dl.winehq.org/wine-builds/debian?suite=trixie&components=main&binaryArch=amd64"],
       "allowedVersions": "/^\\d+(\\.\\d+)+~trixie-\\d+$/",
       "minimumReleaseAgeBehaviour": "timestamp-optional",
-      "schedule": ["* 0-5 * * 1"],
       "addLabels": ["manual-test", "wine"],
       "prBodyNotes": [
         "CI does not install MetaTrader; verify locally before merging: run with tests/compose.dev.yaml, verify signatures, ensure healthy status, and test login persistence across restarts."
@@ -56,7 +54,6 @@
       "matchDepNames": ["python/cpython"],
       "allowedVersions": "/^3\\.14\\.\\d+$/",
       "groupName": "Windows Python",
-      "schedule": ["* 0-5 * * 1"],
       "addLabels": ["manual-test", "windows-python"],
       "prBodyNotes": [
         "CI does not install Python; verify locally before merging: start with tests/compose.dev.yaml and MT_PYTHON=true on an existing dev/data directory, check signature verification and healthcheck, and run tests/python.sh."
@@ -66,7 +63,6 @@
       "description": "Pins hashin-managed MetaTrader5 and numpy wheels in root/opt/mt/python-requirements.txt.",
       "matchFileNames": ["root/opt/mt/python-requirements.txt"],
       "groupName": "Windows Python",
-      "schedule": ["* 0-5 * * 1"],
       "addLabels": ["manual-test", "windows-python"],
       "prBodyNotes": [
         "CI does not install Python packages; verify locally before merging: test with tests/compose.dev.yaml and MT_PYTHON=true, confirm step 4 installation in logs, and run tests/python.sh."
