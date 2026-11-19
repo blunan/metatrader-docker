@@ -12,7 +12,7 @@ exclude_docs: |
 theme:
   name: material
   font: false                                  # system fonts (no Google Fonts requests)
-  favicon: assets/favicon.svg                  # white copy of the material/chart-line icon
+  favicon: assets/favicon.svg                  # material/chart-line icon in the brand accent (light/dark)
   icon:
     logo: material/chart-line
     repo: fontawesome/brands/github
