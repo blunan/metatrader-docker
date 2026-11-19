@@ -1,5 +1,7 @@
 # Troubleshooting
 
+Find the logs, fix common failures, and recognize startup messages you can ignore.
+
 ## Where the logs are
 
 - **`docker logs metatrader-docker`** (or `docker compose logs`):
@@ -27,5 +29,5 @@ Normal base image initialization messages:
 - `17` / `18`: PulseAudio device initialization indices.
 - `_XSERVTransmkdir: Cannot create /tmp/.X11-unix with root ownership` and `screen 0 shmid 0`: Xvfb running under non-root desktop user.
 - `xsettingsd: Unable to open connection to X server`: Benign race condition resolved automatically on immediate retry.
-- `No hardware encoder … (nvenc)`: Fallback to software CPU video encoding when no Nvidia GPU is present.
+- `No hardware encoder ... (nvenc)`: Fallback to software CPU video encoding when no Nvidia GPU is present.
 - `Apps panel enabled`: Informational base desktop log; applications panel remains disabled.

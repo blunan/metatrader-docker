@@ -1,6 +1,8 @@
 # Build it yourself
 
-## Local build and tests
+Build and test the image, see what CI checks and how releases work, and preview this guide. There's no dev container: Docker is the toolchain, so everything below runs in throwaway containers, with local tools only without Docker.
+
+## Build and test
 
 ```sh
 git clone https://github.com/blunan/metatrader-docker.git
@@ -30,6 +32,8 @@ tests/access.sh
       xargs docker run --rm -v "$PWD:/mnt:ro" -w /mnt koalaman/shellcheck:v0.11.0
     ```
 
+    Without Docker, pipe the same file list to a local `xargs shellcheck` instead.
+
 ## In CI
 
 `.github/workflows/image.yml` runs automated verification on pull requests and `main` pushes:
@@ -54,19 +58,19 @@ release-please keeps a release pull request open with the next version and its `
 
 The documentation is built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from `docs/` and `mkdocs.yml`. Dependencies are pinned with hashes in `docs/requirements.txt` (generated from `docs/requirements.in` via `pip-compile --generate-hashes`).
 
-To preview locally:
-
-```sh
-python3 -m venv .venv
-.venv/bin/pip install --require-hashes -r docs/requirements.txt
-.venv/bin/mkdocs serve
-```
-
-Without a local Python, preview in a throwaway container on the same Python version as CI (`python-version` in `.github/workflows/docs.yml`):
+Preview it in a throwaway container on the same Python version as CI (`python-version` in `.github/workflows/docs.yml`):
 
 ```sh
 docker run --rm -it -p 127.0.0.1:8000:8000 -v "$PWD:/work:ro" -w /work python:3.14-slim-trixie \
   sh -c 'pip install -q --root-user-action=ignore --require-hashes -r docs/requirements.txt && mkdocs serve -a 0.0.0.0:8000'
 ```
 
-Browse to `http://127.0.0.1:8000`. `mkdocs build --strict` verifies links, matching CI checks (in the container, add `--site-dir /tmp/site`, since the checkout is mounted read-only).
+Browse to `http://127.0.0.1:8000`. `mkdocs build --strict` verifies links, matching CI checks; in the container, run it with `--site-dir /tmp/site`, since the checkout is mounted read-only.
+
+Without Docker, preview it locally with Python 3.14:
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install --require-hashes -r docs/requirements.txt
+.venv/bin/mkdocs serve
+```

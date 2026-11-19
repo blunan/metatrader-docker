@@ -1,8 +1,10 @@
 # Operations and updates
 
+Stop, restart and update the container, check its health, and halt trading fast when you need to.
+
 ## Stopping and restarts
 
-- **Stopping:** Run `docker compose stop` or `docker stop metatrader-docker`. The shutdown hook sends a graceful exit signal (like *File → Exit*), allowing MetaTrader up to 20s to persist charts and parameters before the container stops (configured via `stop_grace_period: 30s` / `--stop-timeout 30`).
+- **Stopping:** Run `docker compose stop` or `docker stop metatrader-docker`. The shutdown hook sends a graceful exit signal (like **File** > **Exit**), allowing MetaTrader up to 20s to persist charts and parameters before the container stops (configured via `stop_grace_period: 30s` / `--stop-timeout 30`).
 - **Account credential restoration:** During shutdown, the container backs up `Config/accounts.dat` before MetaTrader closes and restores it immediately afterward. Under Wine, MetaTrader's shutdown rewrite of this file can trigger "Accounts deleted due security reason" on subsequent boots.
 - **Auto-restart:** If MetaTrader closes or crashes during normal operation, the container watchdog restarts it automatically within seconds.
 

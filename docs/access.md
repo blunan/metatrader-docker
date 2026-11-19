@@ -49,7 +49,7 @@ A reverse proxy provides custom domain routing, public TLS certificates, and cen
 
     In `Caddyfile`:
 
-    ```
+    ```text
     mt.example.com {
     	reverse_proxy https://metatrader-docker:3001 {
     		header_up Host {host}
